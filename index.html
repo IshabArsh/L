@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Age Input</title>
+<style>
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 300px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 2px solid #333;
+    border-radius: 8px;
+    text-align: center;
+    background: #f0f0f0;
+  }
+  input[type="number"] {
+    width: 80%;
+    padding: 8px;
+    font-size: 16px;
+  }
+  button {
+    margin-top: 15px;
+    padding: 8px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  /* Modal background */
+  .modal-overlay {
+    display: none; /* hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    z-index: 1000;
+  }
+  /* Modal box */
+  .modal {
+    background: white;
+    width: 320px;
+    margin: 100px auto;
+    padding: 20px 30px;
+    border-radius: 6px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.3);
+    text-align: left;
+    font-size: 16px;
+    position: relative;
+  }
+
+  /* Info icon */
+  .info-icon {
+    font-size: 28px;
+    color: #0078D7; /* Windows blue */
+    vertical-align: middle;
+    margin-right: 10px;
+  }
+
+  /* Message text */
+  .modal-message {
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 220px;
+  }
+
+  /* Close button */
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-weight: bold;
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+    color: #555;
+  }
+  .close-btn:hover {
+    color: black;
+  }
+
+  /* Error style */
+  .error {
+    color: red;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+  <h2>Enter your age</h2>
+  <input type="number" id="ageInput" placeholder="Enter your age" min="0" />
+  <br />
+  <button id="submitBtn">Enter</button>
+  <div id="errorMsg" class="error"></div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+      <button class="close-btn" aria-label="Close" id="modalCloseBtn">&times;</button>
+      <div>
+        <span class="info-icon">ℹ️</span>
+        <span class="modal-message" id="modalMessage">Please wait... calculating your age.</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ageInput = document.getElementById('ageInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorMsg = document.getElementById('errorMsg');
+
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+    function openModal(message) {
+      modalMessage.textContent = message;
+      modalOverlay.style.display = 'block';
+      modalCloseBtn.style.display = 'none'; // disable close initially
+    }
+
+    function closeModal() {
+      modalOverlay.style.display = 'none';
+    }
+
+    function validateAge() {
+      errorMsg.textContent = '';
+      const val = ageInput.value.trim();
+      if (val === '') {
+        errorMsg.textContent = 'Please enter your age.';
+        return;
+      }
+      const ageNum = Number(val);
+      if (isNaN(ageNum) || ageNum < 0) {
+        errorMsg.textContent = 'Enter a valid positive number.';
+        return;
+      }
+
+      openModal('Please wait... calculating your age.');
+
+      setTimeout(() => {
+        modalMessage.textContent = `Your Age: ${ageNum}`;
+        modalCloseBtn.style.display = 'block'; // show close button
+      }, 2000);
+    }
+
+    submitBtn.addEventListener('click', validateAge);
+    ageInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        validateAge();
+      }
+    });
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', function(e) {
+      if (e.target === modalOverlay) {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>
